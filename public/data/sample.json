@@ -1,0 +1,56 @@
+{
+  "name": "static-resource-server",
+  "version": "1.0.0",
+  "description": "示例 JSON 数据文件，用于验证 JSON 格式的 MIME 类型推断与 Gzip 压缩",
+  "features": [
+    {
+      "id": 1,
+      "name": "静态文件托管",
+      "category": "核心",
+      "enabled": true
+    },
+    {
+      "id": 2,
+      "name": "MIME 类型推断",
+      "category": "核心",
+      "enabled": true
+    },
+    {
+      "id": 3,
+      "name": "目录浏览",
+      "category": "核心",
+      "enabled": true
+    },
+    {
+      "id": 4,
+      "name": "安全路径校验",
+      "category": "安全",
+      "enabled": true
+    },
+    {
+      "id": 5,
+      "name": "ETag 缓存协商",
+      "category": "性能",
+      "enabled": true
+    },
+    {
+      "id": 6,
+      "name": "Gzip 压缩",
+      "category": "性能",
+      "enabled": true
+    },
+    {
+      "id": 7,
+      "name": "Range 请求",
+      "category": "性能",
+      "enabled": true
+    }
+  ],
+  "stats": {
+    "supportedMimeTypes": 42,
+    "architecture": "DDD",
+    "layers": ["domain", "application", "infrastructure", "presentation"],
+    "language": "TypeScript",
+    "runtime": "Node.js"
+  }
+}

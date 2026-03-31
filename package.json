@@ -1,0 +1,32 @@
+{
+  "name": "@lyndon/static-resource-server",
+  "version": "1.0.0",
+  "description": "基于 Node.js 原生 http 模块的轻量静态资源服务器，支持 MIME 推断、ETag 缓存、Gzip 压缩、Range 分片与目录浏览",
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "start": "node dist/index.js",
+    "build": "tsc",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "keywords": [
+    "http",
+    "static-server"
+  ],
+  "license": "MIT",
+  "author": {
+    "name": "Lyndon",
+    "email": "wuxianzhi052@gmail.com"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "prettier": "^3.8.1",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  },
+  "dependencies": {
+    "chalk": "^5.6.2"
+  }
+}
