@@ -33,6 +33,7 @@ export async function sendFile(
   options: SendFileOptions,
 ): Promise<void> {
   const { filePath, mimeType, stats, etag, acceptEncoding, range } = options;
+  const isHeadRequest = res.req.method === 'HEAD';
 
   // 通用响应头
   const headers: Record<string, string | number> = {
@@ -42,6 +43,14 @@ export async function sendFile(
     'Accept-Ranges': 'bytes',
     'Cache-Control': 'public, max-age=0',
   };
+
+  // HEAD 请求：仅返回元信息，不发送响应体
+  if (isHeadRequest) {
+    headers['Content-Length'] = stats.size;
+    res.writeHead(200, headers);
+    res.end();
+    return;
+  }
 
   // Range 请求处理
   if (range) {
@@ -111,5 +120,12 @@ export function sendHtml(
     'Content-Type': 'text/html; charset=utf-8',
     'Content-Length': Buffer.byteLength(html),
   });
+
+  // HEAD 请求只返回响应头，不发送响应体
+  if (res.req.method === 'HEAD') {
+    res.end();
+    return;
+  }
+
   res.end(html);
 }

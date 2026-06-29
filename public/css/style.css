@@ -7,7 +7,6 @@
 /* ========== CSS 变量 ========== */
 :root {
   --color-bg-primary: #0a0a1a;
-  --color-bg-secondary: #12122a;
   --color-bg-card: rgba(255, 255, 255, 0.03);
   --color-border: rgba(255, 255, 255, 0.06);
   --color-text-primary: #e8edf5;
@@ -18,7 +17,6 @@
   --color-accent-purple: #a78bfa;
   --color-accent-cyan: #22d3ee;
   --color-accent-pink: #f472b6;
-  --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
   --radius-full: 9999px;
@@ -46,6 +44,83 @@ body {
   min-height: 100vh;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+/* 流动的极光背景：两团缓慢飘移的色光，营造空间纵深 */
+body::before {
+  content: '';
+  position: fixed;
+  inset: -20vmax;
+  z-index: -1;
+  background:
+    radial-gradient(
+      40vmax 40vmax at 18% 12%,
+      rgba(96, 165, 250, 0.14),
+      transparent 60%
+    ),
+    radial-gradient(
+      36vmax 36vmax at 82% 78%,
+      rgba(167, 139, 250, 0.12),
+      transparent 60%
+    );
+  filter: blur(8px);
+  animation: aurora 22s ease-in-out infinite alternate;
+}
+
+@keyframes aurora {
+  0% {
+    transform: translate3d(-4%, -3%, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(5%, 4%, 0) scale(1.12);
+  }
+  100% {
+    transform: translate3d(-2%, 5%, 0) scale(1.05);
+  }
+}
+
+/* 顶部滚动进度条 */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 100%;
+  transform: scaleX(var(--scroll, 0));
+  transform-origin: 0 50%;
+  background: linear-gradient(
+    90deg,
+    var(--color-accent-blue),
+    var(--color-accent-purple),
+    var(--color-accent-cyan)
+  );
+  z-index: 100;
+  will-change: transform;
+}
+
+/* 文本选区配色 */
+::selection {
+  background: rgba(96, 165, 250, 0.3);
+  color: #fff;
+}
+
+/* 自定义滚动条 */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-full);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.16);
+  background-clip: padding-box;
 }
 
 /* ========== 应用容器 ========== */
@@ -66,8 +141,8 @@ body {
 
 .hero__glow {
   position: absolute;
-  top: 50%;
-  left: 50%;
+  top: var(--glow-y, 50%);
+  left: var(--glow-x, 50%);
   transform: translate(-50%, -50%);
   width: 400px;
   height: 400px;
@@ -79,6 +154,9 @@ body {
   );
   border-radius: 50%;
   pointer-events: none;
+  transition:
+    top 0.4s ease,
+    left 0.4s ease;
   animation: glow-pulse 4s ease-in-out infinite;
 }
 
@@ -118,14 +196,24 @@ body {
   font-size: 2.5rem;
   font-weight: 700;
   background: linear-gradient(
-    135deg,
+    115deg,
     var(--color-accent-blue),
-    var(--color-accent-purple)
+    var(--color-accent-purple),
+    var(--color-accent-cyan),
+    var(--color-accent-blue)
   );
+  background-size: 250% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   margin-bottom: 0.75rem;
+  animation: title-shimmer 6s linear infinite;
+}
+
+@keyframes title-shimmer {
+  to {
+    background-position: 250% center;
+  }
 }
 
 .hero__subtitle {
@@ -158,6 +246,13 @@ body {
   font-weight: 500;
   border-radius: var(--radius-full);
   letter-spacing: 0.02em;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.badge:hover {
+  transform: translateY(-2px);
 }
 
 .badge--blue {
@@ -198,24 +293,69 @@ body {
 
 /* ========== 卡片 ========== */
 .card {
+  position: relative;
   background: var(--color-bg-card);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   padding: 1.5rem;
-  transition: all 0.25s ease;
+  overflow: hidden;
+  transform: perspective(900px) rotateX(var(--rx, 0deg))
+    rotateY(var(--ry, 0deg)) translateY(var(--lift, 0)) scale(var(--scale, 1));
+  transform-style: preserve-3d;
+  transition:
+    transform 0.12s ease-out,
+    border-color 0.25s ease,
+    background 0.25s ease,
+    box-shadow 0.25s ease;
   backdrop-filter: blur(8px);
+  will-change: transform;
+}
+
+/* 光标聚光高光：位置由 JS 写入 --mouse-x / --mouse-y，
+   默认透明，hover 时淡入，渲染独立于卡片背景，避免样式冲突。 */
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    280px circle at var(--mouse-x, 50%) var(--mouse-y, 0%),
+    rgba(96, 165, 250, 0.14),
+    transparent 45%
+  );
+  opacity: 0;
+  transition: opacity 0.25s ease;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.card:hover::before {
+  opacity: 1;
 }
 
 .card:hover {
-  border-color: rgba(96, 165, 250, 0.2);
+  --lift: -6px;
+  --scale: 1.015;
+  border-color: rgba(96, 165, 250, 0.3);
   background: rgba(255, 255, 255, 0.05);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(96, 165, 250, 0.08);
+  box-shadow: 0 18px 40px rgba(96, 165, 250, 0.12);
+}
+
+/* 卡片内容置于聚光层之上，并随倾斜产生轻微悬浮视差 */
+.card > * {
+  position: relative;
+  z-index: 1;
+  transform: translateZ(0);
 }
 
 .card__icon {
   font-size: 1.75rem;
   margin-bottom: 0.75rem;
+  transition: transform 0.25s ease;
+}
+
+.card:hover .card__icon {
+  transform: translateZ(30px) scale(1.12);
 }
 
 .card__title {
@@ -249,8 +389,10 @@ body {
 }
 
 .demo__link {
+  position: relative;
   display: inline-flex;
   align-items: center;
+  gap: 0.4rem;
   padding: 0.6rem 1.2rem;
   background: var(--color-bg-card);
   border: 1px solid var(--color-border);
@@ -259,13 +401,42 @@ body {
   text-decoration: none;
   font-size: 0.875rem;
   font-weight: 500;
-  transition: all 0.2s ease;
+  overflow: hidden;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+/* 链接末尾的箭头，hover 时滑入 */
+.demo__link::after {
+  content: '→';
+  display: inline-block;
+  max-width: 0;
+  opacity: 0;
+  transform: translateX(-4px);
+  transition:
+    max-width 0.25s ease,
+    opacity 0.25s ease,
+    transform 0.25s ease;
+}
+
+.demo__link:hover::after {
+  max-width: 1.2em;
+  opacity: 1;
+  transform: translateX(0);
 }
 
 .demo__link:hover {
-  background: rgba(96, 165, 250, 0.08);
-  border-color: rgba(96, 165, 250, 0.3);
-  transform: translateY(-1px);
+  background: rgba(96, 165, 250, 0.1);
+  border-color: rgba(96, 165, 250, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(96, 165, 250, 0.12);
+}
+
+.demo__link:active {
+  transform: translateY(0);
 }
 
 .demo__link--error {
@@ -273,8 +444,9 @@ body {
 }
 
 .demo__link--error:hover {
-  background: rgba(244, 114, 182, 0.08);
-  border-color: rgba(244, 114, 182, 0.3);
+  background: rgba(244, 114, 182, 0.1);
+  border-color: rgba(244, 114, 182, 0.4);
+  box-shadow: 0 8px 20px rgba(244, 114, 182, 0.12);
 }
 
 /* ========== 页脚 ========== */
@@ -284,6 +456,40 @@ body {
   border-top: 1px solid var(--color-border);
   color: var(--color-text-muted);
   font-size: 0.8rem;
+}
+
+/* ========== 渐入动画 ========== */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity 0.55s ease,
+    transform 0.55s ease;
+}
+
+[data-reveal].is-revealed {
+  opacity: 1;
+  transform: none;
+}
+
+/* 卡片按顺序错落淡入 */
+.card[data-reveal]:nth-child(1) {
+  transition-delay: 0.04s;
+}
+.card[data-reveal]:nth-child(2) {
+  transition-delay: 0.08s;
+}
+.card[data-reveal]:nth-child(3) {
+  transition-delay: 0.12s;
+}
+.card[data-reveal]:nth-child(4) {
+  transition-delay: 0.16s;
+}
+.card[data-reveal]:nth-child(5) {
+  transition-delay: 0.2s;
+}
+.card[data-reveal]:nth-child(6) {
+  transition-delay: 0.24s;
 }
 
 /* ========== 响应式 ========== */
@@ -302,5 +508,10 @@ body {
 
   .features__grid {
     grid-template-columns: 1fr;
+  }
+
+  /* 触屏设备不做 3D 倾斜 */
+  .card {
+    transform: none;
   }
 }

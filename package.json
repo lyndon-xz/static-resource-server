@@ -1,6 +1,6 @@
 {
   "name": "@lyndon/static-resource-server",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "基于 Node.js 原生 http 模块的轻量静态资源服务器，支持 MIME 推断、ETag 缓存、Gzip 压缩、Range 分片与目录浏览",
   "type": "module",
   "main": "src/index.ts",

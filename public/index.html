@@ -7,10 +7,11 @@
     <link rel="stylesheet" href="/css/style.css" />
   </head>
   <body>
+    <div class="scroll-progress"></div>
     <div class="app">
       <header class="hero">
         <div class="hero__glow"></div>
-        <div class="hero__content">
+        <div class="hero__content" data-reveal>
           <div class="hero__icon">
             <img src="/images/logo.svg" alt="Logo" width="64" height="64" />
           </div>
@@ -27,42 +28,42 @@
       </header>
 
       <main class="features">
-        <h2 class="features__title">✨ 核心特性</h2>
+        <h2 class="features__title" data-reveal>✨ 核心特性</h2>
         <div class="features__grid">
-          <div class="card">
+          <div class="card" data-reveal>
             <div class="card__icon">📁</div>
             <h3 class="card__title">静态文件托管</h3>
             <p class="card__desc">
               自动映射 URL 路径到本地文件系统，支持目录浏览
             </p>
           </div>
-          <div class="card">
+          <div class="card" data-reveal>
             <div class="card__icon">🔍</div>
             <h3 class="card__title">MIME 识别</h3>
             <p class="card__desc">
               覆盖 40+ 文件类型，自动设置正确的 Content-Type
             </p>
           </div>
-          <div class="card">
+          <div class="card" data-reveal>
             <div class="card__icon">🛡️</div>
             <h3 class="card__title">安全防护</h3>
             <p class="card__desc">路径遍历攻击检测与拦截，保障服务器安全</p>
           </div>
-          <div class="card">
+          <div class="card" data-reveal>
             <div class="card__icon">⚡</div>
             <h3 class="card__title">ETag 缓存</h3>
             <p class="card__desc">
               支持 ETag / Last-Modified 缓存协商，减少不必要的传输
             </p>
           </div>
-          <div class="card">
+          <div class="card" data-reveal>
             <div class="card__icon">📦</div>
             <h3 class="card__title">Gzip 压缩</h3>
             <p class="card__desc">
               文本资源自动启用 Gzip 压缩，显著减小传输体积
             </p>
           </div>
-          <div class="card">
+          <div class="card" data-reveal>
             <div class="card__icon">📡</div>
             <h3 class="card__title">Range 请求</h3>
             <p class="card__desc">
@@ -73,7 +74,7 @@
       </main>
 
       <section class="demo">
-        <h2 class="demo__title">🧪 功能演示</h2>
+        <h2 class="demo__title" data-reveal>🧪 功能演示</h2>
         <div class="demo__links">
           <a href="/css/style.css" class="demo__link">CSS 文件</a>
           <a href="/js/app.js" class="demo__link">JS 文件</a>
